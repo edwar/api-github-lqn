@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import firebase from 'firebase';
 import './App.css';
+import ApiGithub from './ApiGithub';
 import { 
   Container,
   Row,
   Col,
-  Collapse,
   Navbar,
-  NavbarToggler,
   NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
   Card,
   Button,
   CardImg,
@@ -32,7 +28,6 @@ class App extends Component {
     this.logout = this.logout.bind(this);
     this.renderLogin = this.renderLogin.bind(this);
     this.toggle = this.toggle.bind(this);
-    this.links = this.links.bind(this);
 
   }
 
@@ -62,20 +57,7 @@ class App extends Component {
     .catch(err => console.log(`Error ${err.code}: ${err.message}`));
   }
 
-  links(){
-    if(this.state.user){
-      return(
-        <Nav className="ml-auto" navbar>
-          <NavItem>
-            <NavLink href="/">Github</NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink href="#" onClick={this.logout}>Cerrar sesión</NavLink>
-          </NavItem>
-        </Nav>
-      )
-    }
-  }
+
 
   renderLogin(){
     if (this.state.user){
@@ -87,7 +69,7 @@ class App extends Component {
             <CardBody>
               <CardTitle>{this.state.user.displayName}</CardTitle>
               <CardSubtitle>{this.state.user.email}</CardSubtitle>
-              <Button onClick={this.logout}>Salir</Button>
+              <Button color="danger" onClick={this.logout}>Salir</Button>
             </CardBody>
           </Card>
         </CardDeck>
@@ -95,7 +77,7 @@ class App extends Component {
     }else{
       //De lo contrario
       return(
-        <Button onClick={this.login}>Login con google</Button>
+        <Button color="success" onClick={this.login}>Login con google</Button>
       );
     }
   }
@@ -105,15 +87,16 @@ class App extends Component {
       <div className="App">
         <Navbar color="faded" light expand="md">
           <NavbarBrand href="/">Api GitHub LQN</NavbarBrand>
-          <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            {this.links()}
-          </Collapse>
         </Navbar>
         <Container>
           <Row>
             <Col sm="12" md={{ size: 4, offset: 4 }}>
               {this.renderLogin()}
+            </Col>
+          </Row>
+          <Row>
+            <Col sm="12" md={{ size: 8, offset: 2 }}>
+              <ApiGithub/>
             </Col>
           </Row>
         </Container>
