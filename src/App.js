@@ -2,22 +2,28 @@ import React, { Component } from 'react';
 import firebase from 'firebase';
 import './App.css';
 import { 
-  Container, 
-  Row, 
-  Col, 
-  Card, 
-  Button, 
-  CardImg, 
-  CardTitle, 
-  CardText, 
+  Container,
+  Row,
+  Col,
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  Card,
+  Button,
+  CardImg,
+  CardTitle,
   CardDeck,
-  CardSubtitle, 
-  CardBody 
+  CardSubtitle,
+  CardBody
 } from 'reactstrap';
 
 class App extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       user: null
     }
@@ -25,7 +31,15 @@ class App extends Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.renderLogin = this.renderLogin.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.links = this.links.bind(this);
 
+  }
+
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
   }
 
   componentWillMount(){
@@ -44,8 +58,23 @@ class App extends Component {
 
   logout(){
     firebase.auth().signOut()
-    .then(res => {console.log("sesión cerrada")})
+    .then(res => {console.log("Sesión cerrada")})
     .catch(err => console.log(`Error ${err.code}: ${err.message}`));
+  }
+
+  links(){
+    if(this.state.user){
+      return(
+        <Nav className="ml-auto" navbar>
+          <NavItem>
+            <NavLink href="/">Github</NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink href="#" onClick={this.logout}>Cerrar sesión</NavLink>
+          </NavItem>
+        </Nav>
+      )
+    }
   }
 
   renderLogin(){
@@ -54,7 +83,7 @@ class App extends Component {
       return(
         <CardDeck>
           <Card>
-            <CardImg top width="100%" src={this.state.user.photoURL} alt={this.state.user.displayName} />
+            <CardImg top width="50%" src={this.state.user.photoURL} alt={this.state.user.displayName} />
             <CardBody>
               <CardTitle>{this.state.user.displayName}</CardTitle>
               <CardSubtitle>{this.state.user.email}</CardSubtitle>
@@ -66,7 +95,7 @@ class App extends Component {
     }else{
       //De lo contrario
       return(
-        <button onClick={this.login}>Login con google</button>
+        <Button onClick={this.login}>Login con google</Button>
       );
     }
   }
@@ -74,11 +103,18 @@ class App extends Component {
   render(){
     return(
       <div className="App">
+        <Navbar color="faded" light expand="md">
+          <NavbarBrand href="/">Api GitHub LQN</NavbarBrand>
+          <NavbarToggler onClick={this.toggle} />
+          <Collapse isOpen={this.state.isOpen} navbar>
+            {this.links()}
+          </Collapse>
+        </Navbar>
         <Container>
           <Row>
-          <Col sm="12" md={{ size: 8, offset: 2 }}>
-            {this.renderLogin()}
-          </Col>
+            <Col sm="12" md={{ size: 4, offset: 4 }}>
+              {this.renderLogin()}
+            </Col>
           </Row>
         </Container>
       </div>
